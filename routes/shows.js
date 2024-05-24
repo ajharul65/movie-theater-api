@@ -17,8 +17,8 @@ router.get('/:id', async (req,res)=>{
     res.json(show)
 });
 
-router.get('/:genre', async (req,res)=>{
-    const shows = await Show.findAll(req.body,{where:{genre: req.params.genre}})
+router.get('/:genre/genre', async (req,res)=>{
+    const shows = await Show.findAll({where:{genre: req.params.genre.toString()}})
     res.json(shows)
 });
 
@@ -42,8 +42,8 @@ router.put('/:id/:status',[check("status").notEmpty(),check("status").isLength({
     const result = validationResult(req);
     if (result.isEmpty()) {
         const show = await Show.findByPk(req.params.id)
-        show.status = req.body.push(req.params.status);
-        res.json(show.status)
+        show.available = req.body.available;
+        res.json(show.available)
     } 
     else {
         res.json({
