@@ -38,12 +38,18 @@ router.put('/:id/:rating', [check("rating").notEmpty().isNumeric()], async (req,
     }
 });
 
-router.put('/:id/:status',[check("status").notEmpty(),check("status").isLength({min:5, max: 25})], async (req,res)=>{
+router.put('/:id/status',[check("status").notEmpty(),check("status").isLength({min:5, max: 25})], async (req,res)=>{
     const result = validationResult(req);
     if (result.isEmpty()) {
         const show = await Show.findByPk(req.params.id)
-        show.available = req.body.available;
-        res.json(show.available)
+        if(show){
+        show.available = !show.available;//toggle the value of show.available
+        await show.save()
+        res.json(show)
+        }
+        else{
+            res.status(404).send('Not found')
+        }
     } 
     else {
         res.json({
